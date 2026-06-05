@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alphabet Lernen</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        height: 100vh;
+        background: #f5f5f5;
+        font-family: Arial, sans-serif;
+    }
+
+.alphabet {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 6px;
+    width: 100vw;
+    height: 100vh;
+    padding: 6px;
+}
+
+.letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 18px;
+    font-size: 6.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.15s;
+}
+
+    .letter:active {
+        transform: scale(0.95);
+        background: #dbeafe;
+    }
+</style>
+</head>
+<body>
+
+<div class="alphabet" id="alphabet"></div>
+
+<script>
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const container = document.getElementById("alphabet");
+
+alphabet.split("").forEach(letter => {
+    const btn = document.createElement("div");
+    btn.className = "letter";
+    btn.textContent = letter;
+
+    btn.addEventListener("click", () => {
+const speech = new SpeechSynthesisUtterance(letter);
+
+speech.lang = "de-DE";
+speech.rate = 0.55;
+speech.pitch = 1.05;
+speech.volume = 1;
+
+speechSynthesis.cancel();
+speechSynthesis.speak(speech);
+    });
+
+    container.appendChild(btn);
+});
+</script>
+
+</body>
+</html>
+
