@@ -57,41 +57,39 @@ const container = document.getElementById("alphabet");
 
 let selectedVoice = null;
 
+// Stimmen laden (wichtig für iPad: async!)
 function loadVoices() {
     const voices = speechSynthesis.getVoices();
 
-    console.table(
-        voices.map(v => ({
-            name: v.name,
-            lang: v.lang
-        }))
-    );
+    console.log("Verfügbare Stimmen:");
+    console.log(voices.map(v => v.name));
 
+    // Priorität: Petra → Anna → irgendein Deutsch
     selectedVoice =
-        voices.find(v => v.name.includes("Anna")) ||
-        voices.find(v => v.name.includes("Petra")) ||
+        voices.find(v => v.name.toLowerCase().includes("petra")) ||
+        voices.find(v => v.name.toLowerCase().includes("anna")) ||
         voices.find(v => v.lang === "de-DE") ||
         voices.find(v => v.lang.startsWith("de")) ||
         null;
 
-    console.log("Verwendete Stimme:", selectedVoice?.name);
+    console.log("Gewählte Stimme:", selectedVoice?.name || "keine");
 }
 
+// iOS braucht das Event (sonst kommt oft nichts)
+speechSynthesis.onvoiceschanged = loadVoices;
 loadVoices();
 
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = loadVoices;
-}
-
+// Buchstaben erzeugen
 alphabet.split("").forEach(letter => {
     const btn = document.createElement("div");
     btn.className = "letter";
     btn.textContent = letter;
 
     btn.addEventListener("click", () => {
-        const speech = new SpeechSynthesisUtterance(
-            letter.toLowerCase()
-        );
+        const speech = new SpeechSynthesisUtterance();
+
+        // WICHTIG: einzeln buchstabieren statt Wort
+        speech.text = letter.toLowerCase();
 
         if (selectedVoice) {
             speech.voice = selectedVoice;
