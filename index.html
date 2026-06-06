@@ -63,6 +63,13 @@ alphabet.split("").forEach(letter => {
 btn.addEventListener("click", () => {
     const speech = new SpeechSynthesisUtterance(letter.toLowerCase());
 
+    const voices = speechSynthesis.getVoices();
+
+    speech.voice =
+        voices.find(v => v.name === "Anna") ||
+        voices.find(v => v.name === "Petra") ||
+        voices.find(v => v.lang.startsWith("de"));
+
     speech.lang = "de-DE";
     speech.rate = 0.55;
     speech.pitch = 1.05;
