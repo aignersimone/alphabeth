@@ -60,17 +60,17 @@ alphabet.split("").forEach(letter => {
     btn.className = "letter";
     btn.textContent = letter;
 
-    btn.addEventListener("click", () => {
-const speech = new SpeechSynthesisUtterance(letter);
+btn.addEventListener("click", () => {
+    const speech = new SpeechSynthesisUtterance(letter.toLowerCase());
 
-speech.lang = "de-DE";
-speech.rate = 0.55;
-speech.pitch = 1.05;
-speech.volume = 1;
+    speech.lang = "de-DE";
+    speech.rate = 0.55;
+    speech.pitch = 1.05;
+    speech.volume = 1;
 
-speechSynthesis.cancel();
-speechSynthesis.speak(speech);
-    });
+    speechSynthesis.cancel();
+    speechSynthesis.speak(speech);
+});
 
     container.appendChild(btn);
 });
