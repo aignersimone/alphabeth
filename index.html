@@ -55,29 +55,56 @@
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const container = document.getElementById("alphabet");
 
+let selectedVoice = null;
+
+function loadVoices() {
+    const voices = speechSynthesis.getVoices();
+
+    console.table(
+        voices.map(v => ({
+            name: v.name,
+            lang: v.lang
+        }))
+    );
+
+    selectedVoice =
+        voices.find(v => v.name.includes("Anna")) ||
+        voices.find(v => v.name.includes("Petra")) ||
+        voices.find(v => v.lang === "de-DE") ||
+        voices.find(v => v.lang.startsWith("de")) ||
+        null;
+
+    console.log("Verwendete Stimme:", selectedVoice?.name);
+}
+
+loadVoices();
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+}
+
 alphabet.split("").forEach(letter => {
     const btn = document.createElement("div");
     btn.className = "letter";
     btn.textContent = letter;
 
-btn.addEventListener("click", () => {
-    const speech = new SpeechSynthesisUtterance(letter.toLowerCase());
+    btn.addEventListener("click", () => {
+        const speech = new SpeechSynthesisUtterance(
+            letter.toLowerCase()
+        );
 
-    const voices = speechSynthesis.getVoices();
+        if (selectedVoice) {
+            speech.voice = selectedVoice;
+        }
 
-    speech.voice =
-        voices.find(v => v.name === "Anna") ||
-        voices.find(v => v.name === "Petra") ||
-        voices.find(v => v.lang.startsWith("de"));
+        speech.lang = "de-DE";
+        speech.rate = 0.55;
+        speech.pitch = 1.05;
+        speech.volume = 1;
 
-    speech.lang = "de-DE";
-    speech.rate = 0.55;
-    speech.pitch = 1.05;
-    speech.volume = 1;
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(speech);
-});
+        speechSynthesis.cancel();
+        speechSynthesis.speak(speech);
+    });
 
     container.appendChild(btn);
 });
